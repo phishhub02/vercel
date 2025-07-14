@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>root@CYBER ALPHA:~# Source Extractor</title>
+  <style>
+    body {
+      background: #000;
+      color: #00bfff;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      color: #00bfff;
+      font-size: 2rem;
+      margin: 20px 0;
+      text-shadow: 0 0 10px #00bfff;
+    }
+    .container {
+      width: 80%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #111;
+      border: 1px solid #00bfff;
+      border-radius: 5px;
+      box-shadow: 0 0 20px #00bfff;
+    }
+    .terminal {
+      background: #000;
+      border: 1px solid #00bfff;
+      border-radius: 5px;
+      padding: 15px;
+      height: 400px;
+      overflow-y: scroll;
+      color: #00bfff;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .prompt {
+      color: #00ff00;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: #00ff00;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    input[type="text"] {
+      width: 93%;
+      padding: 10px;
+      font-size: 1rem;
+      background: #000;
+      color: #00bfff;
+      border: 1px solid #00bfff;
+      border-radius: 3px;
+      margin-top: 10px;
+      outline: none;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      background: #00bfff;
+      color: #000;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: 0.2s;
+    }
+    /* Footer */
+        footer {
+            width: 100%;
+            height: 72px;
+            background-image: url('footer.png'); /* Custom footer image */
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Credits */
+        .credit {
+            margin: 20px 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .credit a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .credit a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }      
+    button:hover {
+      background: #007acc;
+    }
+  </style>
+</head>
+<body>
+  <h1>root@CYBER ALPHA:~# Source Code Extractor</h1>
+  <div class="container">
+    <input type="text" id="url" placeholder="Website URL (e.g., https://example.com)">
+    <center><button onclick="fetchSourceCode()">Fetch</button>
+    <button onclick="copyToClipboard()">Copy</button>
+    <button onclick="downloadSourceCode()">Download</button></center>
+    <div class="terminal" id="output"><span class="prompt">root@CYBER ALPHA:~# </span>Waiting for your URL...<span class="cursor"></span></div>
+  </div>
+
+  <script>
+    function fetchSourceCode() {
+      const url = document.getElementById('url').value;
+      if (!url) {
+        showOutput('⚠️ Please enter a URL!');
+        return;
+      }
+      showOutput('⏳ Fetching source code...');
+      
+      fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+        .then(response => response.json())
+        .then(data => {
+          const content = escapeHtml(data.contents);
+          showOutput(content);
+        })
+        .catch(error => {
+          showOutput('❌ Error fetching source code!');
+          console.error('Error:', error);
+        });
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+    }
+
+    function showOutput(text) {
+      const output = document.getElementById('output');
+      output.innerHTML = `<span class="prompt">root@CYBER ALPHA:~# </span>${text}<span class="cursor"></span>`;
+      output.scrollTop = output.scrollHeight; // Scroll to bottom
+    }
+
+    function copyToClipboard() {
+      const output = document.getElementById('output').innerText.replace('root@Jadoon:~# ', '');
+      navigator.clipboard.writeText(output).then(() => {
+        showOutput('✅ Source code copied to clipboard!');
+      }).catch(err => {
+        showOutput('❌ Failed to copy.');
+        console.error('Error:', err);
+      });
+    }
+
+    function downloadSourceCode() {
+      const output = document.getElementById('output').innerText.replace('root@Jadoon:~# ', '');
+      const blob = new Blob([output], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'source-code.txt';
+      link.click();
+    }
+  </script>
+  
+  <footer></footer>
+<center>   <div class="credit">
+        AUTHOR: <a href="https://t.me/cyber_alpha_pk" target="_blank">VISIT NOW</a>
+    </div></center>
+</body>
+</html>
